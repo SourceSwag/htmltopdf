@@ -1,3 +1,6 @@
+const express = require('express');
+const puppeteer = require('puppeteer');
+const app = express();
 app.get('/pdf', async (req, res) => {
     try {
         // Launch a headless browser instance
@@ -31,3 +34,7 @@ app.get('/pdf', async (req, res) => {
         res.status(500).send({ message: 'Error generating PDF' });
     }
 });
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+
