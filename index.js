@@ -1,7 +1,3 @@
-const express = require('express');
-const puppeteer = require('puppeteer');
-const app = express();
-
 app.get('/pdf', async (req, res) => {
     try {
         // Launch a headless browser instance
@@ -10,6 +6,8 @@ app.get('/pdf', async (req, res) => {
 
         // Use the page.goto method to navigate to the URL
         await page.goto(req.query.url, { waitUntil: 'networkidle2' });
+        // get the title of the website
+        const title = await page.title();
 
         // set the size of the page
         let width = req.query.width ? req.query.width : '800px';
@@ -24,7 +22,7 @@ app.get('/pdf', async (req, res) => {
 
         // Set the response headers to return a PDF
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=document.pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=${title}.pdf`);
 
         // Send the PDF as the response
         res.send(pdf);
@@ -32,8 +30,4 @@ app.get('/pdf', async (req, res) => {
         console.log(error);
         res.status(500).send({ message: 'Error generating PDF' });
     }
-});
-
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
 });
